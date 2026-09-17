@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local application data
+data/*.db
+data/*.sqlite3
+data/*.sqlite
+exports/*
+logs/*
+
+# Browser/session state
+.browser/
+playwright/.auth/
+
+# Secrets/local config
+.env
+.env.*
+!.env.example
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
