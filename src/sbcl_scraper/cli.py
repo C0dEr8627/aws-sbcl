@@ -89,7 +89,7 @@ def export(
     db: Path = typer.Option(Path("data/builders.sqlite3"), "--db", help="SQLite database path."),
     all_profiles: bool = typer.Option(False, "--all", help="Export all stored profiles instead of targets only."),
 ) -> None:
-    """Export stored target profiles to CSV or XLSX."""
+    """Export stored profiles to CSV or XLSX."""
     normalized_format = format.casefold()
     if normalized_format not in {"csv", "xlsx"}:
         typer.echo("Error: --format must be csv or xlsx.", err=True)
@@ -99,23 +99,10 @@ def export(
         output = Path("exports") / f"builders.{normalized_format}"
 
     with BuilderStore(db) as store:
-        if all_profiles:
-            # Keep the export surface intentionally small: targets are the normal
-            # workflow, while --all is useful for auditing the local scrape.
-            rows = _all_builders(store)
-        else:
-            rows = store.list_targets()
+        rows = store.list_all() if all_profiles else store.list_targets()
 
     path = export_csv(rows, output) if normalized_format == "csv" else export_xlsx(rows, output)
     typer.echo(f"Exported {len(rows)} profile(s) to {path}")
-
-
-def _all_builders(store: BuilderStore) -> list[Builder]:
-    # The store intentionally exposes target selection as its public query API.
-    # For --all, query through the existing SQLite connection without expanding
-    # the store's public surface just for the CLI.
-    rows = store._connection.execute("SELECT * FROM builders ORDER BY lower(alias)").fetchall()
-    return [Builder(**dict(row)) for row in rows]
 
 
 if __name__ == "__main__":
