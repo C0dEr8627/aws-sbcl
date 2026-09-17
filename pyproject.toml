@@ -21,6 +21,7 @@ test = [
 
 [project.scripts]
 sbcl-scraper = "sbcl_scraper.cli:app"
+sbcl-scraper-gui = "sbcl_scraper.gui:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
