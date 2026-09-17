@@ -79,14 +79,11 @@ class BuilderStore:
             return None
         return Builder(**dict(row))
 
-    def list_targets(self) -> list[Builder]:
+    def list_all(self) -> list[Builder]:
         rows = self._connection.execute(
-            """
-            SELECT * FROM builders
-            WHERE lower(trim(location)) LIKE '%india'
-              AND followers = 0
-              AND following = 0
-            ORDER BY lower(alias)
-            """
+            "SELECT * FROM builders ORDER BY lower(alias)"
         ).fetchall()
         return [Builder(**dict(row)) for row in rows]
+
+    def list_targets(self) -> list[Builder]:
+        return [builder for builder in self.list_all() if builder.is_target]
