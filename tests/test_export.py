@@ -41,7 +41,7 @@ def test_export_csv(tmp_path):
 
 def test_export_xlsx(tmp_path):
     output = export_xlsx([make_builder()], tmp_path / "builders.xlsx")
-    workbook = load_workbook(output, read_only=True)
+    workbook = load_workbook(output)
     worksheet = workbook["Builders"]
 
     assert list(worksheet.values) == [
