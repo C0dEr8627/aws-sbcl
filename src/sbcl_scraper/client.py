@@ -11,12 +11,7 @@ BASE_URL = "https://builder.aws.com"
 
 @dataclass(slots=True)
 class BuilderCenterClient:
-    """Small HTTP client for publicly accessible Builder Center pages.
-
-    Discovery/search transport is intentionally not hard-coded until the site's
-    actual public search request has been verified. Profile pages are stable
-    enough to support direct retrieval by alias.
-    """
+    """Small HTTP client for publicly accessible Builder Center pages."""
 
     base_url: str = BASE_URL
     timeout: float = 15.0
@@ -38,6 +33,12 @@ class BuilderCenterClient:
 
     def __exit__(self, *_: object) -> None:
         self.close()
+
+    def get_html(self, url: str) -> str:
+        """Fetch a public Builder Center page by absolute URL."""
+        response = self._client.get(url)
+        response.raise_for_status()
+        return response.text
 
     def get_profile_html(self, alias: str) -> str:
         alias = alias.strip().lstrip("@")
